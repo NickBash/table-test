@@ -1,0 +1,10 @@
+:host-context(.footer) {
+    --prizm-data-list-padding: 6px; 
+}
+
+.dropdown-menu-box-footer {
+    display: flex;
+    gap: 0.5vw;
+    justify-content: end;
+    // padding: 6px 16px;
+}

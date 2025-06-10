@@ -1,0 +1,51 @@
+<table prizmTable class="table">
+  <thead>
+    <tr prizmThGroup>
+      @for (cell of columns(); track cell.key) {
+        <th prizmTh [resizable]="cell?.isResizable || false">
+          {{ cell.name }}
+          @if (cell?.filterOptions; as options) {
+            <app-filter
+              class="filter"
+              [filterOptions]="options"
+              [columnKey]="cell.key"
+            ></app-filter>
+          }
+        </th>
+      }
+    </tr>
+  </thead>
+  <tbody [data]="rows()" prizmTbody>
+    <tr
+      class="row"
+      *prizmRow="let item; let i = index"
+      prizmTr
+      [active]="item.id === selectRowId()"
+    >
+      @for (cell of columns(); track cell.key) {
+        @if (item.id === selectRowId()) {
+          <td prizmTd>
+            <!-- редактирование не разработано -->
+            @switch (cell.editType) {
+              @case ('input') {
+                <input prizmInput />
+              }
+              @case ('static') {}
+              @case ('select') {
+                <prizm-input-select
+                  [formControl]="a"
+                  [stringify]="stringify"
+                  [items]="cell.selectOptions || []"
+                ></prizm-input-select>
+              }
+            }
+          </td>
+        } @else {
+          <td prizmTd (dblclick)="selectRow(item)">
+            {{ item[cell.key] }}
+          </td>
+        }
+      }
+    </tr>
+  </tbody>
+</table>

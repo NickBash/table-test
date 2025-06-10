@@ -1,0 +1,16 @@
+.checkbox-container ::ng-deep .label {
+    color: var(--prizm-text-icon-primary);
+}
+
+.checkbox {
+    width: 100%;
+    padding: 6px 16px;
+
+    &:hover {
+        background-color: var(--prizm-table-fill-row-hover);
+    }
+
+    &-selected {
+        background-color: #0089ff33;
+    }
+}

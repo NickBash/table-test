@@ -1,0 +1,84 @@
+<prizm-dropdown-host
+  [isOpen]="isOpenFilter()"
+  (isOpenChange)="isOpenFilter.set($event)"
+  [content]="dropdown"
+  [dropdownStyles]="{ 'box-shadow': 'none', border: 'none' }"
+  prizmDropdownHostWidth="auto"
+  [autoReposition]="false"
+>
+  <button
+    (click)="openFilter()"
+    icon="filter"
+    prizmIconButton
+    appearanceType="ghost"
+    size="s"
+  ></button>
+</prizm-dropdown-host>
+
+<ng-template #dropdown>
+  <prizm-data-list
+    [style.--prizm-data-list-padding]="'6px 16px'"
+    class="dropdown-menu-custom-data-list"
+  >
+    <div class="dropdown-menu-box">
+      @switch (filterOptions()?.filterType) {
+        @case (tableColumnFilterTypeEnum.SearchFilter) {
+          <div class="dropdown-menu-box-item">
+            <app-filter-search
+              [searchTerm]="currentValue() | getSearchData"
+              #filterSearch
+            ></app-filter-search>
+          </div>
+        }
+        @case (tableColumnFilterTypeEnum.CheckboxFilter) {
+          <div class="dropdown-menu-box-item">
+            <app-filter-check-box
+              [checkboxItems]="filterOptions()?.data | getCheckboxData"
+              [currentValue]="currentValue() | getCheckboxData"
+              #filterCheckbox
+            ></app-filter-check-box>
+          </div>
+        }
+      }
+    </div>
+    <!-- <div [ngSwitch]="localFilterOptions.filterType" class="dropdown-menu-box">
+      <div
+        *ngIf="
+          localFilterOptions.filterType !==
+          tableColumnFilterTypeEnum.CheckboxFilter
+        "
+        class="dropdown-menu-box-item"
+      >
+        <app-filter-search
+          *ngSwitchCase="tableColumnFilterTypeEnum.SearchFilter"
+          [searchTerm]="searchData"
+          #filterComponent
+        ></app-filter-search>
+        <app-filter-date-time-range
+          *ngSwitchCase="tableColumnFilterTypeEnum.DateTimeRangeFilter"
+          [dateRange]="dateRangeData"
+          #filterComponent
+        ></app-filter-date-time-range>
+      </div>
+      <app-filter-check-box
+        *ngSwitchCase="tableColumnFilterTypeEnum.CheckboxFilter"
+        [checkboxItems]="checkboxData"
+        #filterComponent
+      ></app-filter-check-box>
+    </div> -->
+    <div footer class="dropdown-menu-box-footer">
+      <button prizmButton appearance="primary" size="m" (click)="applyFilter()">
+        Применить
+      </button>
+      <button
+        prizmButton
+        appearanceType="outline"
+        appearance="secondary"
+        size="m"
+        (click)="resetFilter()"
+      >
+        Сбросить
+      </button>
+    </div>
+  </prizm-data-list>
+</ng-template>

@@ -1,0 +1,11 @@
+<form [formGroup]="formGroup" class="checkbox-container">
+  <div *ngFor="let item of checkboxData">
+    <prizm-checkbox
+      class="checkbox"
+      [class.checkbox-selected]="isCheckboxSelected(item.value)"
+      [formControlName]="item.value"
+    >
+      {{ item.label }}
+    </prizm-checkbox>
+  </div>
+</form>
