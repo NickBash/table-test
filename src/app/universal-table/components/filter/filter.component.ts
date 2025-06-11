@@ -21,6 +21,7 @@ import { FiltersTableService } from '../../services/filters-table.service';
 import { GetSearchDataPipe } from './components/pipes/get-search-data.pipe';
 import { FilterCheckBoxComponent } from './components/filter-check-box/filter-check-box.component';
 import { GetCheckboxDataPipe } from './components/pipes/get-checkbox-data.pipe';
+import { GetCheckboxCurrentDataPipe } from './components/pipes/get-checkbox-current-data.pipe';
 
 @Component({
   selector: 'app-filter',
@@ -33,6 +34,7 @@ import { GetCheckboxDataPipe } from './components/pipes/get-checkbox-data.pipe';
     GetSearchDataPipe,
     FilterCheckBoxComponent,
     GetCheckboxDataPipe,
+    GetCheckboxCurrentDataPipe,
   ],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss',
@@ -43,7 +45,6 @@ export class FilterComponent implements OnInit {
 
   @Input()
   columnKey: string = '';
-
   currentValue = signal<unknown>(null);
 
   readonly tableColumnFilterTypeEnum = TableColumnFilterType;
@@ -56,43 +57,52 @@ export class FilterComponent implements OnInit {
 
   private readonly filtersTableService = inject(FiltersTableService);
 
-  constructor() {
-    effect(() => {
-      console.log(this.filterOptions());
-    });
+  constructor() {}
+
+  ngOnInit(): void {
+    this.updateCurrentValue();
   }
 
-  ngOnInit(): void {}
-
   openFilter() {
+    this.updateCurrentValue();
+
+    this.isOpenFilter.set(true);
+  }
+
+  updateCurrentValue() {
     const filtersValue = this.filtersTableService.filtersTable$.getValue();
 
     if (Object.prototype.hasOwnProperty.call(filtersValue, this.columnKey)) {
       this.currentValue.set(filtersValue[this.columnKey]);
     }
-
-    this.isOpenFilter.set(true);
   }
 
   applyFilter(): void {
-    if (
-      this.filterOptions()?.filterType === TableColumnFilterType.SearchFilter
-    ) {
-      const value = this.filterSearch()?.value;
+    const component = this.getComponent();
 
-      this.filtersTableService.partialUpdate({ [this.columnKey]: value });
-    }
-    if (
-      this.filterOptions()?.filterType === TableColumnFilterType.CheckboxFilter
-    ) {
-      const value = this.filterCheckbox()?.value;
+    if (!component) return;
 
-      this.filtersTableService.partialUpdate({ [this.columnKey]: value });
-    }
+    const value = component.value;
+    this.filtersTableService.partialUpdate({ [this.columnKey]: value });
+
+    this.isOpenFilter.set(false);
   }
 
   resetFilter(): void {
     this.filtersTableService.partialUpdate({ [this.columnKey]: null });
     this.currentValue.set(null);
+    this.getComponent()?.clean();
+  }
+
+  getComponent() {
+    const filterType = this.filterOptions()?.filterType;
+
+    if (filterType === TableColumnFilterType.SearchFilter) {
+      return this.filterSearch();
+    }
+    if (filterType === TableColumnFilterType.CheckboxFilter) {
+      return this.filterCheckbox();
+    }
+    return null;
   }
 }

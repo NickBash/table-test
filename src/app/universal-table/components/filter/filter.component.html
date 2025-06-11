@@ -34,7 +34,7 @@
           <div class="dropdown-menu-box-item">
             <app-filter-check-box
               [checkboxItems]="filterOptions()?.data | getCheckboxData"
-              [currentValue]="currentValue() | getCheckboxData"
+              [currentValue]="currentValue() | getCheckboxCurrentData"
               #filterCheckbox
             ></app-filter-check-box>
           </div>

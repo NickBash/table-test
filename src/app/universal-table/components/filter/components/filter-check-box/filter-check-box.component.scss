@@ -10,7 +10,12 @@
         background-color: var(--prizm-table-fill-row-hover);
     }
 
-    &-selected {
+    &:has(.checkbox--checked) {
         background-color: #0089ff33;
     }
+
+    // Это больше не нужно
+    // &-selected {
+    //     background-color: #0089ff33;
+    // }
 }
